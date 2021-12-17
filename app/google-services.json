@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "889602169349",
+    "firebase_url": "https://scarywallpaper-4190d-default-rtdb.firebaseio.com",
+    "project_id": "scarywallpaper-4190d",
+    "storage_bucket": "scarywallpaper-4190d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:889602169349:android:10f7e22cd9d72644089a6c",
+        "android_client_info": {
+          "package_name": "com.eaw.scary.teacher3d.game.hdwallpapers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "889602169349-knq80pdihq0th5gg65rp9hbadgpotfh9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD_wzuHSyvbrJ3oOlq-6v-fZ5-DxgAsz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "889602169349-knq80pdihq0th5gg65rp9hbadgpotfh9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:889602169349:android:eb2b5d2c96f66c84089a6c",
+        "android_client_info": {
+          "package_name": "com.eaw.wallpaperadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "889602169349-knq80pdihq0th5gg65rp9hbadgpotfh9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD_wzuHSyvbrJ3oOlq-6v-fZ5-DxgAsz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "889602169349-knq80pdihq0th5gg65rp9hbadgpotfh9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

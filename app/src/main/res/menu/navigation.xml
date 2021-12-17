@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/gallery"
+        android:title="Wallpapers" />
+
+    <item
+        android:id="@+id/navigation_collections"
+        android:icon="@drawable/ic_collection"
+        android:title="Collections" />
+    <item
+        android:id="@+id/navigation_favorites"
+        android:icon="@drawable/like"
+        android:title="Favorites" />
+
+</menu>
