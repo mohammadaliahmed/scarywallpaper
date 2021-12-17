@@ -25,6 +25,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:clickable="true"
+            android:id="@+id/info"
             android:foreground="?android:attr/selectableItemBackground"
             android:orientation="vertical">
 

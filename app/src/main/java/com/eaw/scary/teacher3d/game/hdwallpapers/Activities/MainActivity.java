@@ -16,6 +16,7 @@ import com.eaw.scary.teacher3d.game.hdwallpapers.Fragment.HomeFragment;
 import com.eaw.wallpaper.R;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private Fragment fragment;
+    public static int openCounter=0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

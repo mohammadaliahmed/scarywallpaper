@@ -6,6 +6,7 @@ import android.app.DownloadManager;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -13,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,8 +41,13 @@ import com.eaw.scary.teacher3d.game.hdwallpapers.Utils.ApplicationClass;
 import com.eaw.scary.teacher3d.game.hdwallpapers.Utils.CommonUtils;
 import com.eaw.scary.teacher3d.game.hdwallpapers.Utils.SharedPrefs;
 import com.eaw.wallpaper.R;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,6 +68,10 @@ public class ViewImage extends AppCompatActivity {
     public static final int PERMISSION_WRITE = 0;
 
     private AdView googleAd;
+    private InterstitialAd interstitialAd;
+
+    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/1033173712";
+    LinearLayout info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +83,9 @@ public class ViewImage extends AppCompatActivity {
         googleAd = findViewById(R.id.googleAd);
         AdRequest adRequest = new AdRequest.Builder().build();
         googleAd.loadAd(adRequest);
+        getPermissions();
 
-
-
+        info = findViewById(R.id.info);
         likeUnlikeHeart = findViewById(R.id.likeUnlikeHeart);
         likeUnlike = findViewById(R.id.likeUnlike);
         save = findViewById(R.id.save);
@@ -90,6 +102,12 @@ public class ViewImage extends AppCompatActivity {
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
 
+        info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showInterstitial();
+            }
+        });
 
         viewPager = findViewById(R.id.viewpager);
         mViewPagerAdapter = new MainSliderAdapter(this, imgList);
@@ -142,7 +160,79 @@ public class ViewImage extends AppCompatActivity {
                 CommonUtils.showToast("Saved");
             }
         });
+        InterstitialAd.load(
+                this,
+                AD_UNIT_ID,
+                adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        ViewImage.this.interstitialAd = interstitialAd;
+                        if (MainActivity.openCounter > 0) {
+                            if (MainActivity.openCounter % 3 == 0) {
+                                showInterstitial();
+                            }
+                        }
+                        MainActivity.openCounter = MainActivity.openCounter + 1;
+
+                        interstitialAd.setFullScreenContentCallback(
+                                new FullScreenContentCallback() {
+                                    @Override
+                                    public void onAdDismissedFullScreenContent() {
+                                        // Called when fullscreen content is dismissed.
+                                        // Make sure to set your reference to null so you don't
+                                        // show it a second time.
+                                        ViewImage.this.interstitialAd = null;
+                                        Log.d("TAG", "The ad was dismissed.");
+                                    }
+
+                                    @Override
+                                    public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                        // Called when fullscreen content failed to show.
+                                        // Make sure to set your reference to null so you don't
+                                        // show it a second time.
+                                        ViewImage.this.interstitialAd = null;
+                                        Log.d("TAG", "The ad failed to show.");
+                                    }
+
+                                    @Override
+                                    public void onAdShowedFullScreenContent() {
+                                        // Called when fullscreen content is shown.
+                                        Log.d("TAG", "The ad was shown.");
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        interstitialAd = null;
+
+                        String error =
+                                String.format(
+                                        "domain: %s, code: %d, message: %s",
+                                        loadAdError.getDomain(), loadAdError.getCode(), loadAdError.getMessage());
+                        Toast.makeText(
+                                ViewImage.this, "onAdFailedToLoad() with error: " + error, Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+
+
     }
+
+    private void showInterstitial() {
+        // Show the ad if it's ready. Otherwise toast and restart the game.
+        if (interstitialAd != null) {
+            interstitialAd.show(this);
+        } else {
+            Toast.makeText(this, "Ad did not load", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
 
     private void checkLikeStatus() {
         likedMap = SharedPrefs.getLikedMap();
@@ -255,23 +345,29 @@ public class ViewImage extends AppCompatActivity {
                 });
     }
 
-    //runtime storage permission
-    public boolean checkPermission() {
-        int READ_EXTERNAL_PERMISSION = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        if ((READ_EXTERNAL_PERMISSION != PackageManager.PERMISSION_GRANTED)) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_WRITE);
-            return false;
+    private void getPermissions() {
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {
+                Manifest.permission.SET_WALLPAPER,
+
+
+        };
+
+        if (!hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+    }
+
+    public boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
         }
         return true;
     }
-
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_WRITE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            //do somethings
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
