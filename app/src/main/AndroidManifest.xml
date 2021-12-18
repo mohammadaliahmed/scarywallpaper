@@ -34,6 +34,7 @@
         <activity android:name="com.eaw.scary.teacher3d.game.hdwallpapers.Activities.MainActivity" />
         <activity android:name="com.eaw.scary.teacher3d.game.hdwallpapers.Activities.ViewImage"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.eaw.scary.teacher3d.game.hdwallpapers.Activities.HomeScreen" />
 
 
         <service android:name="com.eaw.scary.teacher3d.game.hdwallpapers.Utils.MyFirebaseMessagingService">
